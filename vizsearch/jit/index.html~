@@ -1,0 +1,71 @@
+<html>  
+    <head>  
+  
+      <title>Everyday Systems: HabitCal: Tags</title>
+<style type="text/css">
+<!--
+h1,h2,h3 { font-family: Arial, Helvetica, Geneva, sans-serif;  }
+    h1    { font-size: 145%; }
+    h2    { font-size: 110%; }
+    h3    { font-size: 100%; }
+    th { font-family: Arial; font-size: 80%; background: #FFFFFF; }
+    .t,.d,.r,.y,.g,.o,.D,.R,.Y,.G,.O,.nws { font-family: Arial; font-size: 80%; text-align: right; background: #FFFFFF; }
+       .d,.r,.y,.g,.o { height: 30px ; width: 30px;}
+    .t { text-align:center ; }
+    .r,.R { background: #FF0000; }
+    .y,.Y { background: #FFFF00; }
+    .g,.G { background: #00FF00; }
+    .o,.O { background: #CCCCCC; }
+    .nws  { background: #FF6600; }
+.star { text-decoration:none; font-size: 70%; font-family: Arial; }
+.no  { color: red; font-style: normal; } 
+.tiny { font-family: arial; font-size: 10px; font-style: normal; font-weight: normal; }
+.nav { background: #F0F0F0; font-family: Arial, Helvetica, Geneva, sans-serif;}
+    .quote { font-family: monospace; font-style: normal; font-weight: normal; }
+.ad  { font-family: arial; font-size: 10px; font-style: normal; font-weight: normal; color: white;  text-align: center; }
+.show { vertical-align: middle; }
+
+-->
+</style>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+    _uacct = "UA-97636-4";
+urchinTracker();
+</script>
+
+    <link type="text/css" rel="stylesheet" href="css/treemap.css" />  
+  
+    <script type="text/javascript" src="js/Jit/jit.js" ></script>  
+    <script type="text/javascript" src="js/treemap.js" ></script>  
+
+    </head>  
+  
+    <body onload="init();">  
+
+<h2><a href="/">Everyday Systems</a> : <a href="/habitcal/">HabitCal</a> : Tags</h2>                                                                        
+                                                                                                                                                                
+<p>This is a <a href="http://www.cs.umd.edu/hcil/treemap-history/">treemap</a> of all the habits people are tracking on the HabitCal.</p>
+
+<p>The size of each box indicates the number of people tracking the habit.</p>
+
+<p>The color of the box indicates the average daily success rate of people (greener is better).</p>
+
+<p>Mouse over to see the exact numbers.</p>
+
+  
+             <div id="infovis" />  
+
+
+
+
+
+
+<p>By <a href="mailto:reinhard.engels@gmail.com">Reinhard Engels</a></p>
+
+<p>&nbsp;&#169; 2001-<script language="javascript">document.write(new Date().getFullYear());</script> <a href="http://everydaysystems.com"
+>Everyday Systems LLC</a>, All Rights Reserved.</p>
+
+</body>
+</html>
+
