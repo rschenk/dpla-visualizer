@@ -1,8 +1,23 @@
-.chart div {
-  font: 10px sans-serif;
-  background-color: steelblue;
-  text-align: left;
-  padding: 3px;
-  margin: 1px;
-  color: white;
+.chart rect {
+	fill: steelblue;
 }
+
+.chart line {
+	stroke: #333;
+	stroke-width: 1px;
+}
+
+.keyword_cloud {
+	width: 100%;
+}
+.keyword_cloud .keyword {
+	display: inline;
+	padding: 0 5px ;
+}
+
+.keyword_cloud .size1 { font-size: 12px; }
+.keyword_cloud .size2 { font-size: 16px; }
+.keyword_cloud .size3 { font-size: 20px; }
+.keyword_cloud .size4 { font-size: 24px; }
+.keyword_cloud .size5 { font-size: 28px; }
+.keyword_cloud .size6 { font-size: 32px; }
