@@ -1,57 +1,158 @@
-<html>  
-    <head>  
-  
-      <title>DPLA: Multi Faceted Treemap</title>
-<style type="text/css">
-<!--
-h1,h2,h3 { font-family: Arial, Helvetica, Geneva, sans-serif;  }
-    h1    { font-size: 145%; }
-    h2    { font-size: 110%; }
-    h3    { font-size: 100%; }
-    th { font-family: Arial; font-size: 80%; background: #FFFFFF; }
-    .t,.d,.r,.y,.g,.o,.D,.R,.Y,.G,.O,.nws { font-family: Arial; font-size: 80%; text-align: right; background: #FFFFFF; }
-       .d,.r,.y,.g,.o { height: 30px ; width: 30px;}
-    .t { text-align:center ; }
-    .r,.R { background: #FF0000; }
-    .y,.Y { background: #FFFF00; }
-    .g,.G { background: #00FF00; }
-    .o,.O { background: #CCCCCC; }
-    .nws  { background: #FF6600; }
-.star { text-decoration:none; font-size: 70%; font-family: Arial; }
-.no  { color: red; font-style: normal; } 
-.tiny { font-family: arial; font-size: 10px; font-style: normal; font-weight: normal; }
-.nav { background: #F0F0F0; font-family: Arial, Helvetica, Geneva, sans-serif;}
-    .quote { font-family: monospace; font-style: normal; font-weight: normal; }
-.ad  { font-family: arial; font-size: 10px; font-style: normal; font-weight: normal; color: white;  text-align: center; }
-.show { vertical-align: middle; }
-
--->
-</style>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-
-    <link type="text/css" rel="stylesheet" href="css/treemap.css" />  
-      <script type="text/javascript" src="js/dpla.js" ></script>  
-    <script type="text/javascript" src="js/jit.js" ></script>  
-    <script type="text/javascript" src="js/treemap.js" ></script>  
-
-    </head>  
-  
-    <body>  
-
-
-<form id="searchForm"><fieldset><legend>DPLA Visual Search</legend>
+<!doctype html>
+<html><head>
+<meta charset="utf-8">
+<title>Using jQuery with the DPLA</title>
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="css/treemap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+</head><body>
+<h1>Using jQuery with the DPLA</h1>
+<form id="searchForm"><fieldset><legend>Search DPLA</legend>
 <input type="hidden" name="search_type" value="keyword" />
-<input type="hidden" name="limit" value="100" />
+<input type="hidden" name="limit" value="20" />
 <label>Keyword: <input id="query" type="text" name="query" placeholder="a keyword" /></label> <input type="submit" value="Search" />
 </fieldset></form>
 <div id="results"></div>
+<div id="infovis"></div>
+<div id="publicationHistogram"></div>
+<div id="subjectHeadings"></div>
 
-<p>The <span style="font-weight: bold; font-size:150%;">size</span> of each box indicates number of total results in each facet. The <span style="font-weight: bold; color: green;">color</span> of the box indicates number of retrieved results in each facet.</p>
-  
-             <div id="infovis" />  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+<script src="js/d3.v2.js"></script>
+<script src="js/numeric_histogram.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="js/treemap.js" ></script>  
+<script type="text/javascript" src="js/jit.js" ></script>
+<script type="text/javascript" src="js/dpla.js" ></script>
 
 
-</body>
-</html>
+<!--
+<script>
+jQuery(document).ready(function($){
+	var $searchForm = $("#searchForm");
+	$searchForm.on("submit",function(e){
+		var submit = $searchForm.find('[type="submit"]').attr("disabled","disabled"),
+			params = $searchForm.serialize();
+			
+		$.getJSON("http://api.dp.la/dev/item/?" + params + "&facet=subject&facet=language&facet=creator&callback=?")
+			.done(function(data){
+				var facets = {};
+				
+				// Map the facets from an object into an array of objects
+				for(facetName in data.facets){					
+					facets[facetName+'s'] = [];
+					var currentFacet = facets[facetName+'s'];
+					
+					for(key in data.facets[facetName]) {
+						currentFacet.push({
+							title: key,
+							count: +data.facets[facetName][key]
+						});
+					}	
+				}
+				
+				
+				
+				
+				
+				/*
+				  
+				Timeline histogram
+				
+				
+				*/
+				
+				
+				var publicationYears = _.chain(facets.creators)
+				                        .map(function(creator){ 
+											return creator.title.match(/\d\d\d\d/g); 
+										})
+										.compact()
+										.map(function(years){
+											  var sum = _.reduce(years, function(s, n){ return s + parseInt(n); }, 0);
+											  return Math.round(sum / years.length); 
+										})
+										.value()
+										.sort();
+				
+				
+				var nh = new NumericHistogram(publicationYears, 10);
+				var histogramData = [];
+				for(year in nh.toJSON() ) {
+					histogramData.push({ year: +year, value: +nh.get(year) });
+				}
+				
+				
+				
+				var h = 100,
+				    w = 600;
+					
 
+				$('#publicationHistogram').empty();
+				var viz = d3.select('#publicationHistogram').append('svg:svg').attr('class', 'chart').attr('width', w).attr('height', h);
+				
+				var x = d3.scale.ordinal()
+				        .domain(_.map(histogramData, function(d){ return d.year; }))
+						.rangeBands([0, w]);
+				
+				var y = d3.scale.linear()
+				        .domain([0, nh.maxValue])
+						.range([0, h]);
+						
+										
+				viz.selectAll("rect")
+				    .data(histogramData)
+				  .enter().append("rect")
+				    .attr('transform', function(d){ return "translate(0, "+ (h - y(d.value)) +")"; })
+				    .attr('x', function(data){ return x(data.year); } )
+				    .attr("y", 0)
+				    .attr("width", x.rangeBand())
+				    .attr("height", function(data){ return y(data.value); });				
+				
+				
+				viz.append("line")
+				  .attr('transform', 'translate(0, '+(h-1)+')')
+				  .attr('x1', 0)
+				  .attr('x2', w);
+				  
+				  
+				  
+				  
+				  
+				  
+			  /* 
+				  
+				  
+			  Subject Keyword Cloud
+				  
+				  
+			  */
+			  
+			  
+			  var subjectHeadingCloud = d3.select("#subjectHeadings").attr("class", "keyword_cloud");
+			  
+			  
+			  
+			  var classes = d3.scale.linear()
+			    .domain([0, d3.max(_.map(facets.subjects, function(s){ return s.count; }))] )
+				.range([1, 6]);
+				
+			  subjectHeadingCloud.selectAll('div.keyword')
+			  	.data( _.sortBy(facets.subjects, function(s){ return s.title; }))
+			  .enter().append('div')
+			    .attr('class', function(d){ return "keyword size" + Math.round(classes(d.count)); })
+				.attr('title', function(d){ return d.count; })
+				.text(function(d){ return d.title; });
+			  
+			  
+			})
+			.fail(function(){
+				alert('Glaring error');
+				})
+			.always(function(){
+				submit.removeAttr("disabled");
+				});
+		return false;
+		});
+	});
+</script>-->
+</body></html>
